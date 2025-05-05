@@ -128,6 +128,23 @@ class PlacarWindow(QWidget):
                 self.time_a += 1
             elif data == "B+":
                 self.time_b += 1
+            # Novos comandos:
+            elif data == "A+2":
+                self.time_a += 2
+            elif data == "A+3":
+                self.time_a += 3
+            elif data == "B+2":
+                self.time_b += 2
+            elif data == "B+3":
+                self.time_b += 3
+            elif data == "A-1":
+                self.time_a = max(self.time_a - 1, 0)
+            elif data == "B-1":
+                self.time_b = max(self.time_b - 1, 0)
+            elif data == "A0":
+                self.time_a = 0
+            elif data == "B0":
+                self.time_b = 0
             elif data == "RESET":
                 self.time_a = 0
                 self.time_b = 0

@@ -93,20 +93,53 @@ class ControleWindow(QWidget):
         group_actions = QGroupBox("Ações")
         group_actions.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout_actions = QGridLayout()
-        btn_a = QPushButton("+1 Time A")
-        btn_b = QPushButton("+1 Time B")
+        # Row 0: +1
+        btn_a1 = QPushButton("+1 Time A")
+        btn_b1 = QPushButton("+1 Time B")
+        # Row 1: +2
+        btn_a2 = QPushButton("+2 Time A")
+        btn_b2 = QPushButton("+2 Time B")
+        # Row 2: +3
+        btn_a3 = QPushButton("+3 Time A")
+        btn_b3 = QPushButton("+3 Time B")
+        # Row 3: -1
+        btn_a_minus = QPushButton("-1 Time A")
+        btn_b_minus = QPushButton("-1 Time B")
+        # Row 4: Zerar placar de cada time
+        btn_a_zero = QPushButton("Zerar Time A")
+        btn_b_zero = QPushButton("Zerar Time B")
+        # Row 5: Controles do Timer
         btn_start = QPushButton("Iniciar Timer")
         btn_stop = QPushButton("Parar Timer")
+        # Row 6: Reset geral do placar
         btn_reset = QPushButton("Resetar Placar")
-        for btn in (btn_a, btn_b, btn_start, btn_stop, btn_reset):
+        for btn in (btn_a1, btn_b1, btn_a2, btn_b2, btn_a3, btn_b3,
+                    btn_a_minus, btn_b_minus, btn_a_zero, btn_b_zero,
+                    btn_start, btn_stop, btn_reset):
             btn.setStyleSheet("font-size: 18px; padding: 10px;")
-        layout_actions.addWidget(btn_a, 0, 0)
-        layout_actions.addWidget(btn_b, 0, 1)
-        layout_actions.addWidget(btn_start, 1, 0)
-        layout_actions.addWidget(btn_stop, 1, 1)
-        layout_actions.addWidget(btn_reset, 2, 0, 1, 2)
-        btn_a.clicked.connect(lambda: self.enviar("A+"))
-        btn_b.clicked.connect(lambda: self.enviar("B+"))
+        layout_actions.addWidget(btn_a1, 0, 0)
+        layout_actions.addWidget(btn_b1, 0, 1)
+        layout_actions.addWidget(btn_a2, 1, 0)
+        layout_actions.addWidget(btn_b2, 1, 1)
+        layout_actions.addWidget(btn_a3, 2, 0)
+        layout_actions.addWidget(btn_b3, 2, 1)
+        layout_actions.addWidget(btn_a_minus, 3, 0)
+        layout_actions.addWidget(btn_b_minus, 3, 1)
+        layout_actions.addWidget(btn_a_zero, 4, 0)
+        layout_actions.addWidget(btn_b_zero, 4, 1)
+        layout_actions.addWidget(btn_start, 5, 0)
+        layout_actions.addWidget(btn_stop, 5, 1)
+        layout_actions.addWidget(btn_reset, 6, 0, 1, 2)
+        btn_a1.clicked.connect(lambda: self.enviar("A+"))
+        btn_b1.clicked.connect(lambda: self.enviar("B+"))
+        btn_a2.clicked.connect(lambda: self.enviar("A+2"))
+        btn_b2.clicked.connect(lambda: self.enviar("B+2"))
+        btn_a3.clicked.connect(lambda: self.enviar("A+3"))
+        btn_b3.clicked.connect(lambda: self.enviar("B+3"))
+        btn_a_minus.clicked.connect(lambda: self.enviar("A-1"))
+        btn_b_minus.clicked.connect(lambda: self.enviar("B-1"))
+        btn_a_zero.clicked.connect(lambda: self.enviar("A0"))
+        btn_b_zero.clicked.connect(lambda: self.enviar("B0"))
         btn_start.clicked.connect(lambda: self.enviar("START"))
         btn_stop.clicked.connect(lambda: self.enviar("STOP"))
         btn_reset.clicked.connect(lambda: self.enviar("RESET"))

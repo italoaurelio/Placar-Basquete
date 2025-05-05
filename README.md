@@ -12,12 +12,21 @@
 - **placar.py**: Exibe o placar interativo com timer, nomes e pontuações.
 - **controle.py**: Interface para atualizar nomes, período, timer, selecionar ícones e executar ações rápidas.
 
-## Como Usar 🚀
+## Instalação e Execução 🚀
 
-Para iniciar o projeto, basta rodar o arquivo `main.py`:
-```bash
-python main.py
-```
+1. **Instale o PyQt5:**
+   ```bash
+   pip install PyQt5
+   ```
+
+2. **Instale a fonte Digital-7:**
+   - Caso a fonte **Digital-7** não esteja instalada, baixe-a [aqui](https://www.dafont.com/digital-7.font) (ou utilize outro link de sua preferência) e instale-a no seu sistema.
+
+3. **Inicie o projeto:**
+   - Rode o arquivo `main.py`:
+     ```bash
+     python main.py
+     ```
 
 ## Observações 📌
 - As atualizações enviadas pelo controle são recebidas pelo placar via socket TCP 📡.
