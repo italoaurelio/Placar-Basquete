@@ -23,5 +23,6 @@ python main.py
 - As atualizações enviadas pelo controle são recebidas pelo placar via socket TCP 📡.
 - No modo decrescente, o timer decrementa até chegar a zero, onde ele para automaticamente 🛑.
 - As janelas são configuradas para serem leves e integradas ao ambiente de streaming, possibilitando uma personalização fácil 🎨.
+- **Atenção:** Caso a fonte **Digital-7** não esteja instalada no sistema, instale-a para que os números sejam exibidos corretamente.
 
 Sinta-se à vontade para ajustar as configurações e personalizar o projeto conforme suas necessidades. Divirta-se! 😄🎉
