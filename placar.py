@@ -16,9 +16,12 @@ class PlacarWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground, True)  # nova linha para bordas arredondadas
 
         default_width = 800
-        default_height = default_width // 3
+        default_height = default_width // 4
         self.resize(default_width, default_height)
         self.setMinimumSize(default_width, default_height)
+        self.default_width = default_width            # novo
+        self.default_height = default_height          # novo
+        self.scaled = False                           # novo
 
         self.time_a = 0
         self.time_b = 0
@@ -50,7 +53,7 @@ class PlacarWindow(QWidget):
             lbl.setStyleSheet("font-size: 80px; color: white;")
             lbl.setAlignment(Qt.AlignCenter)
             lbl.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            lbl.setMargin(10)
+            lbl.setMargin(5)  # reduz a margem vertical
 
         # Configura os estilos para os labels não numéricos (time names e período)
         
@@ -89,7 +92,7 @@ class PlacarWindow(QWidget):
 
     def socket_server(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind(('localhost', 5000))
+        server.bind(('localhost', 5001))
         server.listen(1)
 
         print("Placar esperando controle conectar...")
@@ -182,6 +185,44 @@ class PlacarWindow(QWidget):
             if self.segundos == 0:
                 QMetaObject.invokeMethod(self, "stop_timer", Qt.QueuedConnection)
         self.update_ui()
+
+    def keyPressEvent(self, event):
+        # Verifica se F11 foi pressionado
+        if event.key() == Qt.Key_F11:
+            screen = QApplication.primaryScreen().availableGeometry()
+            if not self.scaled:
+                new_width = int(screen.width() * 0.95)
+                factor = new_width / self.default_width
+                new_height = int(self.default_height * factor)
+                self.resize(new_width, new_height)
+                self.scaleUI(factor)
+                # Centraliza a janela
+                x = screen.x() + (screen.width() - new_width) // 2
+                y = screen.y() + (screen.height() - new_height) // 2
+                self.move(x, y)
+                self.scaled = True
+            else:
+                self.resize(self.default_width, self.default_height)
+                self.scaleUI(1)
+                x = screen.x() + (screen.width() - self.default_width) // 2
+                y = screen.y() + (screen.height() - self.default_height) // 2
+                self.move(x, y)
+                self.scaled = False
+        else:
+            super().keyPressEvent(event)
+
+    def scaleUI(self, factor):
+        # Atualiza os estilos dos labels com os novos tamanhos de fonte e ícones
+        self.period_label.setStyleSheet(f"font-size: {int(30 * factor)}px; color: white;")
+        self.timer_label.setStyleSheet(f"font-family: 'Digital-7'; font-size: {int(50 * factor)}px; color: white;")
+        self.team_a_name.setStyleSheet(f"font-size: {int(40 * factor)}px; color: white;")
+        self.team_b_name.setStyleSheet(f"font-size: {int(40 * factor)}px; color: white;")
+        self.team_a_score.setStyleSheet(f"font-family: 'Digital-7'; font-size: {int(80 * factor)}px; color: white;")
+        self.team_b_score.setStyleSheet(f"font-family: 'Digital-7'; font-size: {int(80 * factor)}px; color: white;")
+        new_icon_size = int(50 * factor)
+        self.team_a_icon.setFixedSize(new_icon_size, new_icon_size)
+        self.team_b_icon.setFixedSize(new_icon_size, new_icon_size)
+        self.timer_label.setMinimumWidth(int(200 * factor))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

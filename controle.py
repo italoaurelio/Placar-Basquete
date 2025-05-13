@@ -10,7 +10,7 @@ class ControleWindow(QWidget):
  # aumento do tamanho para comportar novas funções
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect(('localhost', 5000))
+        self.sock.connect(('localhost', 5001))
         
         # Initialize current period as 1
         self.period = 1
