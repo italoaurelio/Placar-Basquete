@@ -12,7 +12,8 @@ class PlacarWindow(QWidget):
         base_path = os.path.dirname(os.path.abspath(__file__))  # novo
         self.setWindowTitle("Placar de Basquete")
         # Atualize as flags para incluir Qt.WindowSystemMenuHint
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowSystemMenuHint | Qt.Window) # garante que apareça na barra de tarefas
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowSystemMenuHint | Qt.Window)
+        self.setAttribute(Qt.WA_NoSystemBackground, True)  # Garante transparência no Windows
         self.setAttribute(Qt.WA_TranslucentBackground, True)  # nova linha para bordas arredondadas
 
         default_width = 800
@@ -89,6 +90,10 @@ class PlacarWindow(QWidget):
         self.timer.timeout.connect(self.update_timer)
 
         threading.Thread(target=self.socket_server, daemon=True).start()
+
+        self.dragging = False  # Flag para arrastar a janela
+        self.resizing = False  # Flag para redimensionar a janela
+        self.resize_margin = 10  # Margem para detectar redimensionamento
 
     def socket_server(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -187,16 +192,15 @@ class PlacarWindow(QWidget):
         self.update_ui()
 
     def keyPressEvent(self, event):
-        # Verifica se F11 foi pressionado
         if event.key() == Qt.Key_F11:
-            screen = QApplication.primaryScreen().availableGeometry()
+            screen = QApplication.desktop().availableGeometry(self)  # Obtém geometria da tela atual
             if not self.scaled:
                 new_width = int(screen.width() * 0.95)
                 factor = new_width / self.default_width
                 new_height = int(self.default_height * factor)
                 self.resize(new_width, new_height)
                 self.scaleUI(factor)
-                # Centraliza a janela
+                # Centraliza a janela na tela atual
                 x = screen.x() + (screen.width() - new_width) // 2
                 y = screen.y() + (screen.height() - new_height) // 2
                 self.move(x, y)
@@ -224,6 +228,38 @@ class PlacarWindow(QWidget):
         self.team_b_icon.setFixedSize(new_icon_size, new_icon_size)
         self.timer_label.setMinimumWidth(int(200 * factor))
 
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            rect = self.rect()
+            if rect.width() - event.x() <= self.resize_margin and rect.height() - event.y() <= self.resize_margin:
+                self.resizing = True  # Inicia redimensionamento
+            else:
+                self.dragging = True  # Inicia arrasto
+                self.drag_start_pos = event.globalPos() - self.frameGeometry().topLeft()
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if self.dragging:
+            self.move(event.globalPos() - self.drag_start_pos)  # Move a janela
+        elif self.resizing:
+            new_width = max(event.x(), self.minimumWidth())
+            new_height = max(event.y(), self.minimumHeight())
+            self.resize(new_width, new_height)  # Redimensiona a janela
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self.dragging = False
+        self.resizing = False
+        super().mouseReleaseEvent(event)
+
+    def mouseMoveEvent(self, event):
+        rect = self.rect()
+        if rect.width() - event.x() <= self.resize_margin and rect.height() - event.y() <= self.resize_margin:
+            self.setCursor(Qt.SizeFDiagCursor)  # Cursor de redimensionamento
+        else:
+            self.setCursor(Qt.ArrowCursor)  # Cursor padrão
+        super().mouseMoveEvent(event)
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = PlacarWindow()
